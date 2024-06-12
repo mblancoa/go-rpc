@@ -1,0 +1,19 @@
+quiet: False
+disable-version-string: True
+with-expecter: True
+mockname: "Mock{{.InterfaceName}}"
+filename: "{{.MockName}}.go"
+dir: "{{.PackageName}}"
+inpackage: True
+all: True
+recursive: True
+packages:
+  github.com/mblancoa/go-rpc/internal/core:
+    config:
+      dir: "./internal/core"
+  github.com/mblancoa/go-rpc/internal/core/ports:
+    config:
+      dir: "./internal/core/ports"
+  github.com/mblancoa/go-rpc/internal/adapters/mongodb:
+    config:
+      dir: "./internal/adapters/mongodb"
