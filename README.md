@@ -28,8 +28,19 @@ go-rpc
    |   |-- infofile
    |       |-- server.go			//main file to run rpc service
 ```
-## Repositories generation
+## Description
+This project contains a rpc service which receives a request with the properties type, version and hash. 
+The service finds a file with name type-version.json and inserts it into a data base. 
 
+The rpc service has been implemented using protobuf generation and serialization. The business logic of the project is implemented with hexagonal architecture.
+
+Since it has been my first rpc service, I have not had enough time to research how to send specific errors. I think protobuf  serialization is no the best to 
+serialize unknown objects so it is needed to deserialize the response to know the correct content of the file. In the other hand, making requests from postman 
+is very easy using reflexion.
+
+Every component in the project has its own unit test using mocks when it is needed. It could be improved with integrations tests and functional tests (godog
+)
+## Repositories generation
 Installation
 ```
 go install github.com/sunboyy/repogen@latest
@@ -48,7 +59,12 @@ Generation
 make clean mocks
 ```
 
-## Build RPC server
+## Run project
+Docker image
 ```
-go build ./cmd/infofile/server.go
+docker build -t go-rpc .
+```
+Start network with docker-compose
+```
+    docker-compose up
 ```

@@ -1,0 +1,31 @@
+version: '3'
+networks:
+  rpc_network:
+    driver: bridge 
+services:
+  rpc-server:
+    container_name: rpc_server
+    build: .
+    image: go-rpc
+    environment:
+      - RUN_MODE=docker
+    depends_on:
+      - mongodb
+    networks:
+      - rpc_network
+    ports:
+      - 50051:50051
+    volumes:
+      - resources:/data
+
+  mongodb:
+    image: mongo:6-jammy
+    networks:
+      - rpc_network
+    ports:
+      - 27017:27017
+    volumes:
+      - datadb:/data/db
+volumes:
+  resources:
+  datadb:
