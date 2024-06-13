@@ -81,11 +81,11 @@ func openFile(fileDir, fileName string) (*os.File, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			log.Error().Msgf("\"file %s not found", fileName)
+			log.Error().Msgf("file %s not found", filePath)
 			return nil, errors2.ErrNotFound
 		} else {
-			log.Error().Msgf("unexpected error loading file %s: %s", fileName, err)
-			return nil, errors2.ErrNotFound
+			log.Error().Msgf("unexpected error loading file %s: %s", filePath, err)
+			return nil, errors2.ErrGenericError
 		}
 	}
 	return file, nil

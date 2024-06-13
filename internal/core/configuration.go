@@ -8,7 +8,7 @@ import (
 
 type coreConfiguration struct {
 	FileStorage struct {
-		StorageDire string `yaml:"storage-dir"`
+		StorageDir  string `yaml:"storage-dir"`
 		FilePattern string `yaml:"file-pattern"`
 	} `yaml:"file-storage"`
 }
@@ -29,5 +29,5 @@ func SetupCoreConfiguration() {
 	var c coreConfiguration
 	conf.LoadYamlConfiguration(conf.GetConfigFile(), &c)
 	p := PersistenceContext
-	Context.InfoFileService = NewInfoFileService(c.FileStorage.StorageDire, c.FileStorage.FilePattern, p.InfoFileRepository)
+	Context.InfoFileService = NewInfoFileService(c.FileStorage.StorageDir, c.FileStorage.FilePattern, p.InfoFileRepository)
 }

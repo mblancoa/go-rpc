@@ -9,7 +9,7 @@ mongodb:
       password: DB_PASSWORD
 
 file-storage:
-  storage-dir: ./resources
+  storage-dir: /data
   file-pattern: "{{type}}-{{version}}.json"
 
 rpc:
