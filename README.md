@@ -3,6 +3,11 @@
 
 ```
 go-rpc
+|-- cmd
+|   |-- infofile
+|       |-- server.go			//main file to run rpc service
+|-- rpc
+|   |-- infofile.go         // rpc server implementation
 |--internal
    |-- errors
    |   |-- error.go
@@ -24,9 +29,6 @@ go-rpc
    |-- rpc
    |   |-- infofile.go				//rpc service server implementation
    |
-   |-- cmd
-   |   |-- infofile
-   |       |-- server.go			//main file to run rpc service
 ```
 ## Description
 This project contains a rpc service which receives a request with the properties type, version and hash. 

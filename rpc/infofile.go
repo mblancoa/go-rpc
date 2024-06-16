@@ -12,18 +12,18 @@ const (
 	defaultVersion = "1.0.0"
 )
 
-type fileInfoServiceServer struct {
+type infoFileServiceServer struct {
 	UnimplementedInfoFileServiceServer
 	infoFileService core.InfoFileService
 }
 
 func NewInfoFileServiceServer(infoFileService core.InfoFileService) InfoFileServiceServer {
-	return &fileInfoServiceServer{
+	return &infoFileServiceServer{
 		infoFileService: infoFileService,
 	}
 }
 
-func (s *fileInfoServiceServer) LoadFile(ctx context.Context, request *InfoFileRequest) (*InfoFileResponse, error) {
+func (s *infoFileServiceServer) LoadFile(ctx context.Context, request *InfoFileRequest) (*InfoFileResponse, error) {
 
 	infoFile := &domain.InfoFile{
 		Type:    getStringOrDefault(request.GetType(), defaultType),
