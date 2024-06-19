@@ -2,11 +2,12 @@ package rpc
 
 import (
 	"context"
-	"errors"
 	"github.com/mblancoa/go-rpc/internal/core"
 	"github.com/mblancoa/go-rpc/internal/core/domain"
+	errors2 "github.com/mblancoa/go-rpc/internal/errors"
 	"github.com/pioz/faker"
 	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc/codes"
 	"testing"
 )
 
@@ -170,7 +171,7 @@ func (suite *infoFileServiceServerSuite) TestLoadFile_successfulWhenVersionIsEmp
 	suite.Assertions.Empty(result.Content)
 }
 
-func (suite *infoFileServiceServerSuite) TestLoadFile_failWhenServiceFails() {
+func (suite *infoFileServiceServerSuite) TestLoadFile_failWhenServiceReturnsNotfoundError() {
 	request := &InfoFileRequest{}
 	_ = faker.Build(request)
 	infoFile := &domain.InfoFile{
@@ -179,13 +180,33 @@ func (suite *infoFileServiceServerSuite) TestLoadFile_failWhenServiceFails() {
 		Hash:    request.Hash,
 	}
 
-	internalError := errors.New("internal error")
-	suite.infoFileService.EXPECT().LoadFile(infoFile).Times(1).Return(&domain.InfoFile{}, internalError)
+	suite.infoFileService.EXPECT().LoadFile(infoFile).Times(1).Return(&domain.InfoFile{}, errors2.ErrNotFound)
 
 	result, err := suite.serviceServer.LoadFile(context.Background(), request)
 
 	suite.Assertions.Error(err)
 	suite.Assertions.Empty(result)
 
-	suite.Assertions.Equal(internalError, err)
+	expectedError := NewRpcError(codes.NotFound, "not found")
+	suite.Assertions.Equal(expectedError, err)
+}
+
+func (suite *infoFileServiceServerSuite) TestLoadFile_failWhenServiceReturnsGenericError() {
+	request := &InfoFileRequest{}
+	_ = faker.Build(request)
+	infoFile := &domain.InfoFile{
+		Type:    request.Type,
+		Version: request.Version,
+		Hash:    request.Hash,
+	}
+
+	suite.infoFileService.EXPECT().LoadFile(infoFile).Times(1).Return(&domain.InfoFile{}, errors2.ErrGenericError)
+
+	result, err := suite.serviceServer.LoadFile(context.Background(), request)
+
+	suite.Assertions.Error(err)
+	suite.Assertions.Empty(result)
+
+	expectedError := NewRpcError(codes.Unknown, "unexpected error")
+	suite.Assertions.Equal(expectedError, err)
 }

@@ -2,8 +2,12 @@ package rpc
 
 import (
 	"context"
+	"errors"
 	"github.com/mblancoa/go-rpc/internal/core"
 	"github.com/mblancoa/go-rpc/internal/core/domain"
+	errors2 "github.com/mblancoa/go-rpc/internal/errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -11,6 +15,22 @@ const (
 	defaultType    = "core"
 	defaultVersion = "1.0.0"
 )
+
+type rpcError struct {
+	status *status.Status
+}
+
+func (e *rpcError) Error() string {
+	return e.status.Message()
+}
+func (e *rpcError) GRPCStatus() *status.Status {
+	return e.status
+}
+func NewRpcError(c codes.Code, msg string) error {
+	return &rpcError{
+		status: status.New(c, msg),
+	}
+}
 
 type infoFileServiceServer struct {
 	UnimplementedInfoFileServiceServer
@@ -32,7 +52,12 @@ func (s *infoFileServiceServer) LoadFile(ctx context.Context, request *InfoFileR
 	}
 	result, err := s.infoFileService.LoadFile(infoFile)
 	if err != nil {
-		return &InfoFileResponse{}, err
+		response := &InfoFileResponse{}
+		if errors.Is(err, errors2.ErrNotFound) {
+			return response, NewRpcError(codes.NotFound, err.Error())
+		} else {
+			return response, NewRpcError(codes.Unknown, err.Error())
+		}
 	}
 
 	response := &InfoFileResponse{
