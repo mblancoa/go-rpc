@@ -58,7 +58,7 @@ To be configured through inversion of dependencies pattern, it's expected that e
 create every interface implementation that is needed by components in core.
 
 Since JSON is the file's structure, the property `content` contains the file's text but not its binary content. `content` allows any object 
-structure but protobuf serialization is not so flexible with unknown object structures so when postman is used to test `content` is not like the 
+structure but protobuf serialization is not so flexible with unknown object structures so when postman is used to test, `content` is not like the 
 real file's content.
 
 ## Repositories generation
